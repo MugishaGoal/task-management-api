@@ -8,7 +8,7 @@ router.get('/protected', authMiddleware, (req, res) => {
   res.json({ message: 'Protected Route' });
 });
 
-// Create a new task
+//Create a new task
 router.post('/', taskController.createTask);
 
 // Get all tasks
