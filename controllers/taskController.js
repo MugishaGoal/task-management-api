@@ -111,7 +111,7 @@ async getCompletedTasksCount(req, res) {
       const overdueTasks = await Task.find({ dueDate: { $lt: currentDate }, status: { $ne: 'completed' } });
       res.json(overdueTasks);
     } catch (error) {
-      res.status{(500).json({ error: 'Error fetching overdue tasks' });
+      res.status(500).json({ error: 'Error fetching overdue tasks' });
     }
-  }
+  },
 };
