@@ -4,10 +4,25 @@ module.exports = {
   // Create a new task
   async createTask(req, res) {
     try {
-      const task = new Task(req.body);
+      console.log('Request body:', req.body);
+      console.log('Decoded user from token:', req.user);
+
+      const { title, description, dueDate, priority } = req.body;
+      const userId = req.user ? req.user.id : null;
+
+      if (!title || !description || !dueDate || !priority) {
+        return res.status(400).json({ error: 'Please provide all required fields' });
+      }
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const task = new Task({ title, description, dueDate, priority, createdBy: userId });
       await task.save();
       res.status(201).json(task);
     } catch (error) {
+      console.error('Error creating task:', error);
       res.status(500).json({ error: 'Failed to create task' });
     }
   },
@@ -15,7 +30,7 @@ module.exports = {
   // Get all tasks
   async getAllTasks(req, res) {
     try {
-      const tasks = await Task.find();
+      const tasks = await Task.find({ user: req.user.id });
       res.json(tasks);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch tasks' });
